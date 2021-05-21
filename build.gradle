@@ -1,0 +1,95 @@
+plugins {
+    id 'java-library'
+    id 'war'
+    id 'jacoco'
+    id "org.sonarqube" version '3.1.1'
+}
+
+repositories {
+    jcenter()
+}
+
+[
+        "integrationstests",
+        "tests",
+        "slf4j",
+].each {
+    apply from: "gradle/${it}.gradle"
+}
+
+war {
+    archiveFileName = 'TrainHarder.war'
+}
+
+configurations {
+    testContainerAgent
+}
+
+dependencies {
+    api "org.apache.commons:commons-math3:3.6.1"
+
+    implementation "org.projectlombok:lombok:1.18.16",
+            "com.google.guava:guava:28.0-jre",
+            "javax.xml.bind:jaxb-api:2.3.1",
+            "org.primefaces:primefaces:7.0",
+            "javax.servlet:javax.servlet-api:3.1.0",
+            "javax:javaee-api:8.0",
+            "javax.security.enterprise:javax.security.enterprise-api:1.0",
+            "javax.mvc:javax.mvc-api:1.0.0",
+            "org.mvc-spec.ozark:ozark-core:1.0.0-m04",
+            "org.mvc-spec.ozark:ozark-resteasy:1.0.0-m04",
+            "javax.mail:javax.mail-api:1.6.2",
+            "nl.jqno.equalsverifier:equalsverifier:3.4.3",
+            "com.icegreen:greenmail-junit5:1.6.1"
+
+    integrationTestRuntimeOnly "org.hibernate:hibernate-core:5.4.12.Final",
+            "org.mariadb.jdbc:mariadb-java-client:2.6.0"
+
+    testContainerAgent "org.jacoco:org.jacoco.agent:0.8.5:runtime"
+
+    annotationProcessor "org.projectlombok:lombok:1.18.16"
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+    reportsDir = file("${buildDir}/jacoco")
+}
+
+task mergeJacocoReports(type: JacocoReport) {
+    dependsOn test, integrationTest
+    sourceDirectories.setFrom files(sourceSets.main.allSource.srcDirs)
+    classDirectories.setFrom files(sourceSets.main.output)
+    executionData(
+            file("${buildDir}/jacoco/test.exec"),
+            file("${buildDir}/jacoco/integrationTest.exec")
+//            file("${buildDir}/jacocoit/jacoco-docker.exec")
+    )
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.enabled true
+        html.destination file("${buildDir}/jacoco/merge")
+        xml.destination file("${buildDir}/jacoco/merge.xml")
+    }
+}
+
+task kopiereJacocoAgent(type: Copy) {
+    from configurations.testContainerAgent
+    into "${buildDir}/jacocoAgent"
+    rename { String fileName ->
+        "org.jacoco.agent.jar"
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "justinhada_TrainHarder"
+        property "sonar.organization", "justinhada"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/jacoco/merge.xml"
+    }
+}
+
+tasks['integrationTest'].dependsOn kopiereJacocoAgent
+
+version = '0.0.1'

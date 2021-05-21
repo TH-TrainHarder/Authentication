@@ -1,0 +1,41 @@
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+    }
+}
+
+configurations {
+    integrationTestAnnotationProcessor.extendsFrom annotationProcessor
+    integrationTestImplementation.extendsFrom implementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+dependencies {
+    integrationTestImplementation configurations.testImplementation
+
+    integrationTestImplementation platform('org.testcontainers:testcontainers-bom:1.15.1')
+    integrationTestImplementation "org.testcontainers:junit-jupiter",
+            "org.testcontainers:testcontainers",
+            "org.testcontainers:selenium",
+            "org.testcontainers:mariadb"
+    integrationTestImplementation "org.seleniumhq.selenium:selenium-remote-driver:3.141.59",
+            "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59"
+}
+
+task integrationTest(type: Test) {
+    group = 'verification'
+    description = 'Runs the integration tests.'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    shouldRunAfter test
+    useJUnitPlatform()
+}
+
+tasks.withType(Test) {
+    testLogging.exceptionFormat = 'full'
+    reports.html.destination = file("${reporting.baseDir}/${name}")
+}
+
+check.dependsOn integrationTest
+integrationTest.dependsOn assemble
