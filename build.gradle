@@ -6,7 +6,7 @@ plugins {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 [
@@ -18,7 +18,7 @@ repositories {
 }
 
 war {
-    archiveFileName = 'TrainHarder.war'
+    archiveFileName = 'Authentication.war'
 }
 
 configurations {
@@ -26,18 +26,13 @@ configurations {
 }
 
 dependencies {
-    api "org.apache.commons:commons-math3:3.6.1"
-
     implementation "org.projectlombok:lombok:1.18.16",
             "com.google.guava:guava:28.0-jre",
-            "javax.xml.bind:jaxb-api:2.3.1",
             "org.primefaces:primefaces:7.0",
             "javax.servlet:javax.servlet-api:3.1.0",
-            "javax:javaee-api:8.0",
-            "javax.security.enterprise:javax.security.enterprise-api:1.0",
-            "javax.mvc:javax.mvc-api:1.0.0",
-            "org.mvc-spec.ozark:ozark-core:1.0.0-m04",
-            "org.mvc-spec.ozark:ozark-resteasy:1.0.0-m04",
+            "jakarta.platform:jakarta.jakartaee-api:8.0.0",
+            "jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0",
+            "org.glassfish.soteria:javax.security.enterprise:1.0",
             "javax.mail:javax.mail-api:1.6.2",
             "nl.jqno.equalsverifier:equalsverifier:3.4.3",
             "com.icegreen:greenmail-junit5:1.6.1"
