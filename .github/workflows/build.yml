@@ -54,6 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          echo SONAR_TOKEN=\"$SONAR_TOKEN\" > ./local.properties
           docker run -i --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v "$HOME:$HOME" \
