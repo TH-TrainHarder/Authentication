@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'war'
     id 'jacoco'
-    id "org.sonarqube" version '3.1.1'
+    id "org.sonarqube" version '3.2.0'
 }
 
 repositories {
@@ -83,8 +83,8 @@ task kopiereJacocoAgent(type: Copy) {
 
 sonarqube {
     properties {
-        property "sonar.projectKey", "justinhada_TrainHarder"
-        property "sonar.organization", "justinhada"
+        property "sonar.projectKey", "TH-TrainHarder_TH-Authentication"
+        property "sonar.organization", "th-trainharder"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/jacoco/merge.xml"
     }
