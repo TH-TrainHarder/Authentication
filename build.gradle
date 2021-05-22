@@ -60,8 +60,8 @@ task mergeJacocoReports(type: JacocoReport) {
     sourceDirectories.setFrom files(sourceSets.main.allSource.srcDirs)
     classDirectories.setFrom files(sourceSets.main.output)
     executionData(
-            file("${buildDir}/jacoco/test.exec"),
-            file("${buildDir}/jacoco/integrationTest.exec")
+            file("${buildDir}/jacoco/test.exec")
+//            file("${buildDir}/jacoco/integrationTest.exec")
 //            file("${buildDir}/jacocoit/jacoco-docker.exec")
     )
     reports {
