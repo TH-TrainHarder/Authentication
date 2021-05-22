@@ -80,8 +80,16 @@ sonarqube {
         property "sonar.projectKey", "TH-TrainHarder_Authentication"
         property "sonar.organization", "th-trainharder"
         property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.login", getSonarToken()
         property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/jacoco/merge.xml"
     }
+}
+
+String getSonarToken() {
+    def propFile = rootProject.file("./local.properties")
+    def properties = new Properties()
+    properties.load(new FileInputStream(propFile))
+    return properties['SONAR_TOKEN']
 }
 
 tasks['integrationTest'].dependsOn kopiereJacocoAgent
